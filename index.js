@@ -73,7 +73,7 @@ app.get("/api/user/:userId", (req, res, next) => {
 app.get('/api/user/profile/:userId', (req, res) => {
   res.status(400).json({
     status: 404,
-    result: 'Viewing the user profileot is not implemented yet',
+    result: 'Viewing the user profile is not implemented yet',
   });
 });
 
