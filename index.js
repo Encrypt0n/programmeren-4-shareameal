@@ -17,44 +17,118 @@ app.all("*", (req, res, next) => {
 app.get("/", (req, res) => {
   res.status(200).json({
     status: 200,
-    result: "Hello World",
+    result: "Welcome to Share A Meal",
   });
 });
 
-app.post("/api/movie", (req, res) => {
-  let movie = req.body;
+app.post("/api/user", (req, res) => {
+
+  let user = req.body;
   id++;
-  movie = {
+  user = {
     id,
-    ...movie,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    street: user.street,
+    city: user.city,
+    email: user.email,
+    password: user.password,
+    phone: user.phone,
+    roles: user.roles
   };
-  console.log(movie);
-  database.push(movie);
-  res.status(201).json({
-    status: 201,
-    result: database,
-  });
-});
-
-app.get("/api/movie/:movieId", (req, res, next) => {
-  const movieId = req.params.movieId;
-  console.log(`Movie met ID ${movieId} gezocht`);
-  let movie = database.filter((item) => item.id == movieId);
-  if (movie.length > 0) {
-    console.log(movie);
-    res.status(200).json({
-      status: 200,
-      result: movie,
+  console.log(user);
+  const found = database.some(item => item.email === user.email);
+  if(!found) {
+    database.push(user);
+    res.status(201).json({
+      status: 201,
+      result: database,
     });
   } else {
-    res.status(401).json({
-      status: 401,
-      result: `Movie with ID ${movieId} not found`,
+    res.status(409).json({
+      status: 409,
+      result: `User with email ${user.email} already exists`,
     });
   }
 });
 
-app.get("/api/movie", (req, res, next) => {
+app.get("/api/user/:userId", (req, res, next) => {
+  const userId = req.params.userId;
+  console.log(`User met ID ${userId} gezocht`);
+  let user = database.filter((item) => item.id == userId);
+  if (user.length > 0) {
+    console.log(user);
+    res.status(200).json({
+      status: 200,
+      result: user,
+    });
+  } else {
+    res.status(401).json({
+      status: 401,
+      result: `User with ID ${userId} not found`,
+    });
+  }
+});
+
+app.get('/api/user/profile/:userId', (req, res) => {
+  res.status(400).json({
+    status: 404,
+    result: 'Viewing the user profileot is not implemented yet',
+  });
+});
+
+app.delete("/api/user/:userId", (req, res, next) => {
+  const userId = req.params.userId;
+  let user = database.findIndex((item) => item.id == userId);
+  console.log(user);
+   if (user != -1) {
+    console.log(user);
+    database.splice(user);
+    res.status(201).json({
+      status: 201,
+      result: `User met ID ${userId} verwijderd`,
+    });
+  } else {
+    res.status(405).json({
+      status: 405,
+      result: `User with ID ${userId} not found`,
+    });
+  }
+});
+
+app.put("/api/user/:userId", (req, res, next) => {
+  const userId = req.params.userId;
+  console.log(userId);
+  let user = req.body;
+  let userIndex = database.findIndex((item) => item.id == userId);
+  if (user != -1) {
+    console.log(user);
+    
+    database[userIndex]= {
+      id: userId,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      street: user.street,
+      city: user.city,
+      email: user.email,
+      password: user.password,
+      phone: user.phone,
+      roles: user.roles
+    };
+    console.log(database);
+    res.status(201).json({
+      status: 201,
+      result: `User met ID ${userId} aangepast`,
+    });
+  } else {
+    res.status(401).json({
+      status: 401,
+      result: `User with ID ${userId} not found`,
+    });
+  }
+});
+
+app.get("/api/user", (req, res, next) => {
   res.status(200).json({
     status: 200,
     result: database,
