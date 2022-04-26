@@ -6,7 +6,7 @@ let id = 0;
 
 const userController = require('../controllers/user.controller');
 
-router.post("/api/user", userController.addUser)
+router.post("/api/user", userController.validateUser, userController.addUser)
   
   router.get("/api/user/:userId", userController.getUserById)
   
@@ -46,13 +46,13 @@ router.post("/api/user", userController.addUser)
       
       database[userIndex]= {
         id: userId,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        address: user.address,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        street: user.street,
         city: user.city,
-        email: user.email,
+        emailAdress: user.emailAdress,
         password: user.password,
-        phone: user.phone,
+        phoneNumber: user.phoneNumber,
         roles: user.roles
       };
       console.log(database);
