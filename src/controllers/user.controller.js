@@ -11,13 +11,13 @@ let controller = {
             assert(typeof firstName === 'string', 'Firstname must be a string');
             assert(typeof lastName === 'string', 'Lastname must be a string');
             next();
-        } catch (error) {
-            console.log(error.code);
-            console.log(error.message);
-            res.status(400).json({
+        } catch (err) {
+            const error = {
                 status: 400,
-                result: error.toString()
-            })
+                result: err.message
+            };
+            next(error);
+            
         }
    
     },
@@ -56,7 +56,7 @@ let controller = {
             result: database,
           });
     },
-    getUserById(req,res) {
+    getUserById(req,res, next) {
         const userId = req.params.userId;
         console.log(`User met ID ${userId} gezocht`);
         let user = database.filter((item) => item.id == userId);
@@ -67,10 +67,12 @@ let controller = {
             result: user,
           });
         } else {
-          res.status(401).json({
-            status: 401,
+            const error = {
+                status: 401,
             result: `User with ID ${userId} not found`,
-          });
+            };
+            next(error);
+        
         }
     }
 }
