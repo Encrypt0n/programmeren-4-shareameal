@@ -5,7 +5,7 @@ const port = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 const router = require('./src/routes/user.routes');
-const res = require("express/lib/response");
+const { get } = require("express/lib/response");
 
 app.all("*", (req, res, next) => {
   const method = req.method;
@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 
 app.use(router);
 
-app.use((err, res, req, next) => {
+app.use((err, req, res, next) => {
   res.status(err.status).json(err);
 });
 

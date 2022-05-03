@@ -19,14 +19,21 @@ describe('Manage users', () => {
                 .post('/api/user')
                 .send({
                     //alle user values
+                    lastName: "Doe",
+                    street: "Lovensdijkstraat 61",
+                    city: "Breda",
+                    isActive: true,
+                    emailAdress: "j.doe@server.com",
+                    phoneNumber: "+31612345678",
+                    password: "secret"
                 }).end((err, res)=> {
                     res.should.be.an('object');
                     let {status, result} = res.body;
                     status.should.equals(400);
                     result.should.be.a('string').that.equals('Firstname must be a string');
                     done();
-                })
+                });
             
-        })
+        });
     });
 });
