@@ -5,6 +5,9 @@ const server = require('../../index');
 chai.should();
 chai.use(chaiHttp);
 
+let insertedUserId = 0;
+let insertedTestUserId = 0;
+
 let database = [];
 
 describe('Manage users', () => {
