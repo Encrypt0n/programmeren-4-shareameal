@@ -33,57 +33,116 @@ let controller = {
     addUser(req,res) {
         let user = req.body;
         id++;
-        user = {
-          id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          street: user.street,
-          city: user.city,
-          emailAdress: user.emailAdress,
-          password: user.password,
-          phoneNumber: user.phoneNumber,
-          roles: user.roles
-        };
-        console.log(user);
-        const found = database.some(item => item.email === user.email);
-        if(!found) {
-          database.push(user);
-          res.status(201).json({
-            status: 201,
-            result: database,
-          });
-        } else {
-          res.status(409).json({
-            status: 409,
-            result: `User with email ${user.email} already exists`,
-          });
-        };
+        const values = [
+          user.firstName,
+          user.lastName,
+          user.isActive,
+          user.emailAdress,
+          user.password,
+          user.phoneNumber,
+          user.roles,
+          user.street,
+          user.city
+        ];
+        pool.query(
+          "INSERT INTO user (firstName, lastName, isActive, emailAdress, password, phoneNumber, roles, street, city) VALUES (?,?,?,?,?,?,?,?,?)",
+          values,
+          (err, result) => {
+            if (err) {
+              const error = {
+                status: 409,
+                result: "User was not added to database",
+              };
+              next(error);
+            } else {
+              console.log(result.insertId);
+              user.userId = result.insertId;
+              res.status(200).json({
+                status: 200,
+                message: "User is toegevoegd in database",
+                result: user,
+              });
+            }
+          }
+        );
     },
     getAllUsers(req,res) {
+      let users = [];
+      pool.query("SELECT * FROM user", (error, results, fields) => {
+        results.forEach((user) => {
+          users.push(user);
+        });
         res.status(200).json({
-            status: 200,
-            result: database,
-          });
+          status: 200,
+          result: users,
+        });
+      });
     },
     getUserById(req,res, next) {
-        const userId = req.params.userId;
-        console.log(`User met ID ${userId} gezocht`);
-        let user = database.filter((item) => item.id == userId);
-        if (user.length > 0) {
-          console.log(user);
-          res.status(200).json({
-            status: 200,
-            result: user,
-          });
-        } else {
+      const userId = req.params.userId;
+      pool.query(
+        `SELECT * FROM user WHERE id =${userId}`,
+        (err, results, fields) => {
+          if (err) throw err;
+          if (results.length > 0) {
+            res.status(200).json({
+              status: 200,
+              result: results,
+            });
+          } else {
             const error = {
-                status: 401,
-            result: `User with ID ${userId} not found`,
+              status: 404,
+              message: "User with provided Id does not exist",
+              result: "User with provided Id does not exist",
             };
             next(error);
-        
+          }
         }
+      );
+    },
+    getUserProfile(req, res) {
+      res.status(200).json({
+        message: "Not implemented yet",
+      });
+    },
+    updateUser(req, res, next) {
+      const userId = req.params.userId;
+      const user = req.body;
+      pool.query(
+        `UPDATE user SET firstName = '${user.firstName}', lastName = '${user.lastName}', street = '${user.street}', city = '${user.city}', emailAdress = '${user.emailAdress}', password = '${user.password}' WHERE id = ${userId}`,
+        (err, results) => {
+          const { changedRows } = results;
+          if (err) throw err;
+  
+          if (changedRows == 0) {
+            const error = {
+              status: 404,
+              message: "User with provided id does not exist",
+              result: "User with provided id does not exist",
+            };
+            next(error);
+          } else {
+            res.status(200).json({ status: 200, result: "Succusful update!" });
+          }
+        }
+      );
+    },
+    deleteUser(req, res, next) {
+      const userId = req.params.userId;
+      pool.query(`DELETE FROM USER WHERE id=${userId}`, (err, results) => {
+        if (err) throw err;
+        const { affectedRows } = results;
+        if (!affectedRows) {
+          const error = {
+            status: 404,
+            result: "User does not exist",
+          };
+          next(error);
+        } else {
+          res.status(200).json({ status: 200, result: "Succesful deletion" });
+        }
+      });
     }
-}
+};
 
 module.exports = controller;
