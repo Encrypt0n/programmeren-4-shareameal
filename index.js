@@ -11,7 +11,9 @@ app.all("*", (req, res, next) => {
   const method = req.method;
   console.log(`Method ${method} is aangeroepen`);
   next();
+  
 });
+//
 
 app.get("/", (req, res) => {
   res.status(200).json({
