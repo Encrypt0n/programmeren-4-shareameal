@@ -59,7 +59,7 @@ let controller = {
               user.userId = result.insertId;
               res.status(200).json({
                 status: 200,
-                message: "User is toegevoegd in database",
+                message: "User was added to database",
                 result: user,
               });
             }

@@ -17,24 +17,7 @@ router.post("/api/user", userController.validateUser, userController.addUser)
     });
   });
   
-  router.delete("/api/user/:userId", (req, res, next) => {
-    const userId = req.params.userId;
-    let user = database.findIndex((item) => item.id == userId);
-    console.log(user);
-     if (user != -1) {
-      console.log(user);
-      database.splice(user);
-      res.status(201).json({
-        status: 201,
-        result: `User met ID ${userId} verwijderd`,
-      });
-    } else {
-      res.status(405).json({
-        status: 405,
-        result: `User with ID ${userId} not found`,
-      });
-    }
-  });
+  router.delete("/api/user/:userId", userController.deleteUser) 
   
   router.put("/api/user/:userId", (req, res, next) => {
     const userId = req.params.userId;
