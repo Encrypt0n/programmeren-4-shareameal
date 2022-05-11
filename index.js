@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
+require('dotenv').config();
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
@@ -11,7 +12,7 @@ app.all("*", (req, res, next) => {
   const method = req.method;
   console.log(`Method ${method} is aangeroepen`);
   next();
-  
+
 });
 //
 
