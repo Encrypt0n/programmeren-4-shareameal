@@ -19,37 +19,7 @@ router.post("/api/user", userController.validateUser, userController.addUser)
   
   router.delete("/api/user/:userId", userController.deleteUser) 
   
-  router.put("/api/user/:userId", (req, res, next) => {
-    const userId = req.params.userId;
-    console.log(userId);
-    let user = req.body;
-    let userIndex = database.findIndex((item) => item.id == userId);
-    if (user != -1) {
-      console.log(user);
-      
-      database[userIndex]= {
-        id: userId,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        street: user.street,
-        city: user.city,
-        emailAdress: user.emailAdress,
-        password: user.password,
-        phoneNumber: user.phoneNumber,
-        roles: user.roles
-      };
-      console.log(database);
-      res.status(201).json({
-        status: 201,
-        result: `User met ID ${userId} aangepast`,
-      });
-    } else {
-      res.status(401).json({
-        status: 401,
-        result: `User with ID ${userId} not found`,
-      });
-    }
-  });
+  router.put("/api/user/:userId", userController.updateUser)
   
   router.get("/api/user", userController.getAllUsers)
 
