@@ -135,7 +135,7 @@ let controller = {
         if (err) throw err;
         const { affectedRows } = results;
         //console.log(affectedRows);
-        //
+        
         if (!affectedRows) {
           const error = {
             status: 400,
