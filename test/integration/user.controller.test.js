@@ -2,6 +2,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../../index');
 require('dotenv').config()
+const assert = require('assert');
 const dbconnection = require('../../src/database/dbconnection')
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey, logger } = require('../../src/config/config')
@@ -400,7 +401,7 @@ describe('Manage users', () => {
                         city: "city",
                     })
                     .end((err, res) => {
-                        assert.ifError(err);
+                        //assert.ifError(err);
                         res.should.be.an('object');
                         let { status, message } = res.body;
                         status.should.equals(400);
