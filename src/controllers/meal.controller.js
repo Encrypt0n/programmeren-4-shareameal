@@ -1,5 +1,5 @@
 const assert = require("assert");
-const dbconnection = require("../database/dbconnection");
+const pool = require("../database/dbconnection");
 const logger = require('../config/config').logger
 const jwt = require('jsonwebtoken')
 const jwtSecretKey = require('../config/config').jwtSecretKey
@@ -45,7 +45,7 @@ let controller = {
     },
 
     getAllMeals: (req, res, next) => {
-        dbconnection.getConnection(function (err, connection) {
+        pool.getConnection(function (err, connection) {
             if (err) next(err) // not connected!
 
             // Use the connection
@@ -70,7 +70,7 @@ let controller = {
     },
     getMeal: (req, res, next) => {
         var mealId = req.params.id;
-        dbconnection.getConnection(function (err, connection) {
+        pool.getConnection(function (err, connection) {
             if (err) next(err) // not connected!
 
             // Use the connection
@@ -116,7 +116,7 @@ let controller = {
 
             newMealdata.allergenes = newMealdata.allergenes.join(",");
 
-            dbconnection.query(
+            pool.query(
                 `SELECT cookId FROM meal WHERE id = ${mealId}`,
                 (err, result, fields) => {
                     if (err) {
@@ -131,7 +131,7 @@ let controller = {
                         //Kijk of meal van user is
                         console.log(result.length);
                         if (result[0].cookId == userId || result[0].cookId == null) {
-                            dbconnection.query(
+                            pool.query(
                                 `UPDATE meal SET ? WHERE id = ?`,
                                 [newMealdata, mealId],
                                 (err, results) => {
@@ -175,7 +175,7 @@ let controller = {
             const id = req.params.id;
             const mealId = req.params.id;
 
-            dbconnection.query(
+            pool.query(
                 `SELECT cookId FROM meal WHERE id = ${mealId}`,
                 (err, result, fields) => {
                     if (err) {
@@ -190,7 +190,7 @@ let controller = {
                         //Kijk of meal van user is
                         console.log(result.length);
                         if (result[0].cookId == userId || result[0].cookId == null) {
-                            dbconnection.query(
+                            pool.query(
                                 `DELET FROM meal WHERE id = ${mealId} `,
                                 (err, results) => {
                                     //Update meal
@@ -223,7 +223,7 @@ let controller = {
     addMeal: (req, res, next) => {
         let meal = req.body;
         meal.allergenes = meal.allergenes.join(",");
-        dbconnection.getConnection(function (connError, conn) {
+        pool.getConnection(function (connError, conn) {
             //Not connected
             if (connError) {
                 res.status(502).json({

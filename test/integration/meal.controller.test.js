@@ -105,7 +105,8 @@ const INSERT_USER_2 =
     'INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES' +
     '(2, "test", "test", "test@server.com", "test", "test", "test");';
 
-const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY1MjgwNDg4OSwiZXhwIjoxNjUzODQxNjg5fQ.2shFq3anP77fCpv2jWYY1dYOUX5kmq_Sh1CWT6LqkUQ"
+//const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY1MjgwNDg4OSwiZXhwIjoxNjUzODQxNjg5fQ.2shFq3anP77fCpv2jWYY1dYOUX5kmq_Sh1CWT6LqkUQ"
+const token = process.env.JWT_TEST_TOKEN;
 
 chai.should();
 chai.use(chaiHttp);
