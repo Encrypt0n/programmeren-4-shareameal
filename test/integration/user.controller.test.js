@@ -40,7 +40,7 @@ describe('Manage users', () => {
             database = [];
             done();
         });*/
-        it('When a required input is missing, a valid error should be returned', (done) => {
+        it('TC 201-1 When a required input is missing, a valid error should be returned', (done) => {
                 chai
                 .request(server)
                 .post('/api/user')
@@ -63,11 +63,10 @@ describe('Manage users', () => {
                 });
             
         });
-        it("When an emailAdress is not valid, a valid error should be returned", (done) => {
+        it("TC 201-2 When an emailAdress is not valid, a valid error should be returned", (done) => {
             chai
               .request(server)
               .post("/api/user")
-              //.set({ Authorization: token })
               .send({
                 firstName: "John",
                 lastName: "Doe",
@@ -83,11 +82,10 @@ describe('Manage users', () => {
                 done();
               });
           });
-          it("When a password is not valid, a valid error should be returned", (done) => {
+          it("TC 201-3 When a password is not valid, a valid error should be returned", (done) => {
             chai
               .request(server)
               .post("/api/user")
-             // .set({ Authorization: token })
               .send({
                 firstName: "John",
                 lastName: "Doe",
@@ -112,7 +110,7 @@ describe('Manage users', () => {
                 done();
               });
           });
-          it("When a user is succesfully added, a valid response should be returned", (done) => {
+          it("TC 201-5 When a user is succesfully added, a valid response should be returned", (done) => {
             const user = {
                 firstName: "Test2",
                 lastName: "van Turnhout",
@@ -131,7 +129,6 @@ describe('Manage users', () => {
             chai
               .request(server)
               .post("/api/user")
-             // .set({ Authorization: token })
               .send(user)
               .end((err, res) => {
                 res.should.be.an("object");
@@ -142,7 +139,7 @@ describe('Manage users', () => {
                 done();
               });
           });
-          it("When a user already exists with the same email, a valid error should be returned", (done) => {
+          it("TC 201-4 When a user already exists with the same email, a valid error should be returned", (done) => {
             const user = {
                 firstName: "John",
                 lastName: "Doe",
@@ -168,7 +165,6 @@ describe('Manage users', () => {
             chai
               .request(server)
               .post("/api/user")
-             // .set({ Authorization: token })
               .send(user)
               .end((err, res) => {
                 res.should.be.an("object");
@@ -182,14 +178,14 @@ describe('Manage users', () => {
           });
         });
        // describe("UC-202 Overview of Users", () => {});
-        //describe('UC-202 overview users', () => {
+        describe('UC-202 overview users', () => {
           /*afterEach((done) => {
               dbconnection.query(CLEAR_USERS_TABLE, (err, result, fields) => {
                   if (err) throw err;
                   done();
               })
           });*/
-          /*it("TC 202-1 Zero users should be returned", (done) => {
+          it("TC 202-1 Zero users should be returned", (done) => {
               chai.request(server).get("/api/user/")
                   .end((err, res) => {
                       res.should.have.status(200);
@@ -271,8 +267,7 @@ describe('Manage users', () => {
               });
   
           });
-      });*/
-        //describe("UC-203 Requesting Userprofile", () => {});
+      });
         describe("UC-203 Requesting Userprofile", () => {
           /*afterEach((done) => {
               dbconnection.query(CLEAR_USERS_TABLE, (err, result, fields) => {
@@ -280,7 +275,7 @@ describe('Manage users', () => {
                   done();
               })
           });*/
-          /*it("TC 203-1 When the token is not valid, a valid error should be returned", (done) => {
+          it("TC 203-1 When the token is not valid, a valid error should be returned", (done) => {
               chai.request(server).get("/api/user/profile")
                   .set({ Authorization: "Bearer asdfjlasjffslasdjfs" })
                   .end((err, res) => {
@@ -294,7 +289,7 @@ describe('Manage users', () => {
   
                       done();
                   });
-          });*/
+          });
           it("TC 203-2 Valid token, user should be returned", (done) => {
               dbconnection.query(INSERT_USER_1, () => {
                   chai.request(server).get("/api/user")
@@ -389,32 +384,32 @@ describe('Manage users', () => {
                 done();
               });
           });
-          /*it("When a phoneNumber is invalid, a valid error should be returned", (done) => {
-            const user = {
-                firstName: "John",
-                lastName: "Doe",
-                isActive: true,
-                emailAdress: "j.doe@server.com",
-                password: "password1",
-                phoneNumber: "",
-                street: "Lovensdijkstraat 61",
-                city: "Breda"
-                
-            };
-            chai
-              .request(server)
-              .put("/api/user/1")
-              .send(user)
-              .end((err, res) => {
-                res.should.be.an("object");
-                let { status, result } = res.body;
-                status.should.equal(400);
-                result.should.be
-                  .a("string")
-                  .that.equals("phoneNumber must be atleast one character long");
-                done();
-              });
-          });*/
+          it('TC 205-3 When the phonenumber does not match the regex, a valid error should be returned', (done) => {
+            dbconnection.query(INSERT_USER_1, () => {
+                chai.request(server).put('/api/user/1')
+                    .set({ Authorization: token })
+                    .send({
+                        firstName: "firstName",
+                        lastName: "last",
+                        emailAdress: "rens@lakens.org",
+                        password: "Geh3imWachtwoord!",
+                        isActive: 1,
+                        phoneNumber: "123 456",
+                        roles: 'editor',
+                        street: "street",
+                        city: "city",
+                    })
+                    .end((err, res) => {
+                        assert.ifError(err);
+                        res.should.be.an('object');
+                        let { status, message } = res.body;
+                        status.should.equals(400);
+                        message.should.be.a('string').that.equals('PhoneNumber must be a string');
+                        done();
+                    });
+            });
+        });
+          
           it("TC 205-4 When a user with the provided id does not exist, a valid error should be returned", (done) => {
             const user = {
                 firstName: "John",

@@ -18,19 +18,19 @@ let controller = {
             
             //if(isActive) { assert(typeof isActive === 'boolean', 'IsActive must be a boolean'); }
 
-            /*assert(emailAdress.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/), "emailAdress is invalid");
+            assert(emailAdress.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/), "EmailAdress is invalid");
             //8 karakters, 1 letter, 1 nummer en 1 speciaal teken
-            assert(password.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/), "password is invalid");
+            assert(password.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/), "Password is invalid");
 
             if (phoneNumber != undefined) {
-                assert(typeof phoneNumber === "string", "The phoneNumber must be a string");
+                assert(typeof phoneNumber === "string", "PhoneNumber must be a string");
                 assert(
                     phoneNumber.match(
                         /(06)(\s|\-|)\d{8}|31(\s6|\-6|6)\d{8}/
                     ),
-                    "invalid phoneNumber"
+                    "Invalid phoneNumber"
                 )
-            }*/
+            }
             
             
             
