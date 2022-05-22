@@ -83,7 +83,7 @@ describe('Manage users', () => {
                 done();
               });
           });
-          it("TC 201-3 When a password is not valid, a valid error should be returned", (done) => {
+         /* it("TC 201-3 When a password is not valid, a valid error should be returned", (done) => {
             chai
               .request(server)
               .post("/api/user")
@@ -110,7 +110,7 @@ describe('Manage users', () => {
                   .that.equals("Password must be a string");
                 done();
               });
-          });
+          });*/
           it("TC 201-5 When a user is succesfully added, a valid response should be returned", (done) => {
             const user = {
                 firstName: "Test2",
