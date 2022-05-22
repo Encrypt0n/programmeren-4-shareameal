@@ -1,7 +1,10 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
+const authRoutes = require('./src/routes/authentication.routes')
+const userRoutes = require('./src/routes/user.routes')
 require('dotenv').config();
+const logger = require('./src/config/config').logger
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
@@ -10,7 +13,7 @@ const { get } = require("express/lib/response");
 
 app.all("*", (req, res, next) => {
   const method = req.method;
-  console.log(`Method ${method} is aangeroepen`);
+  logger.debug(`Method ${method} is aangeroepen`);
   next();
 
 });
@@ -22,6 +25,9 @@ app.get("/", (req, res) => {
     result: "Welcome to Share A Meal",
   });
 });
+
+app.use('/api', userRoutes)
+app.use('/api', authRoutes)
 
 app.use(router);
 
@@ -38,7 +44,7 @@ app.all("*", (req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  logger.debug(`Example app listening on port ${port}`);
 });
 
 module.exports = app;

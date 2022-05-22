@@ -1,5 +1,5 @@
 const assert = require('assert');
-const pool = require('../../dbconnection');
+const pool = require('../database/dbconnection');
 
 let database = [];
 let id = 0;
@@ -13,11 +13,24 @@ let controller = {
             assert(typeof lastName === 'string', 'Lastname must be a string');
             assert(typeof emailAdress === 'string', 'EmailAdress must be a string');
             assert(typeof password === 'string', 'Password must be a string');
-            if(phoneNumber) { assert(typeof phoneNumber === 'string', 'phoneNumber must be a string'); }
             assert(typeof street === 'string', 'Street must be a string');
             assert(typeof city === 'string', 'City must be a string');
             
             //if(isActive) { assert(typeof isActive === 'boolean', 'IsActive must be a boolean'); }
+
+            /*assert(emailAdress.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/), "emailAdress is invalid");
+            //8 karakters, 1 letter, 1 nummer en 1 speciaal teken
+            assert(password.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/), "password is invalid");
+
+            if (phoneNumber != undefined) {
+                assert(typeof phoneNumber === "string", "The phoneNumber must be a string");
+                assert(
+                    phoneNumber.match(
+                        /(06)(\s|\-|)\d{8}|31(\s6|\-6|6)\d{8}/
+                    ),
+                    "invalid phoneNumber"
+                )
+            }*/
             
             
             
@@ -48,7 +61,7 @@ let controller = {
         pool.query(
           `INSERT INTO user SET ?`,
           user,
-          (err, result, fiels) => {
+          (err, result, fields) => {
             if (err) {
               const error = {
                 status: 409,
@@ -68,16 +81,52 @@ let controller = {
         );
     },
     getAllUsers(req,res) {
-      let users = [];
-      pool.query("SELECT * FROM user", (error, results, fields) => {
-        results.forEach((user) => {
-          users.push(user);
-        });
-        res.status(200).json({
-          status: 200,
-          result: users,
-        });
-      });
+      const queryParams = req.query;
+        logger.debug(queryParams);
+
+        let { firstName, isActive } = req.query;
+        let queryString = "SELECT * FROM `user`";
+
+        if (firstName || isActive) {
+            queryString += " WHERE "
+            if (firstName) {
+                queryString += '`firstName` LIKE ?'
+                firstName = '%' + firstName + '%'
+            }
+            if (firstName && isActive) {
+                queryString += ` AND `
+            }
+        } if (isActive) {
+            queryString += `isActive = ${isActive}`;
+        }
+
+        queryString += ";";
+
+        logger.debug(`queryString = ${queryString}`)
+
+        //dbconnection.getConnection(function (err, connection) {
+           // if (err) next(err) // not connected!
+
+            // Use the connection
+            pool.query(
+                queryString,
+                [firstName, isActive],
+                function (error, results, fields) {
+                    // When done with the connection, release it.
+                    connection.release()
+
+                    // Handle error after the release.
+                    if (error) next(error)
+
+                    // Don't use the connection here, it has been returned to the pool.
+                    res.status(200).json({
+                        status: 200,
+                        result: results,
+                    });
+                    console.log(results);
+                }
+            )
+       // })
     },
     getUserById(req,res, next) {
       const userId = req.params.userId;
@@ -85,27 +134,62 @@ let controller = {
         `SELECT * FROM user WHERE id =${userId}`,
         (err, results, fields) => {
           console.log(results);
-          if (err) throw err;
-          if (results[0]) {
+          if (results.length == 0) {
+            const err = {
+                status: 404,
+                message: "User does not exist"
+            }
+            next(err);
+        } else {
             res.status(200).json({
-              status: 200,
-              result: results,
+                status: 200,
+                result: results,
             });
-          } else {
-            const error = {
-              status: 404,
-              message: "User with provided Id does not exist",
-            };
-            next(error);
-          }
+            console.log(results[0]);
+        }
         }
       );
     },
     getUserProfile(req, res) {
-      res.status(200).json({
-        message: "Not implemented yet",
-      });
-    },
+      if (req.headers && req.headers.authorization) {
+          var authorization = req.headers.authorization.split(' ')[1],
+              decoded;
+          try {
+              decoded = jwt.verify(authorization, jwtSecretKey);
+          } catch (e) {
+              return;
+          }
+          var userId = decoded.userId;
+
+          //dbconnection.getConnection(function (err, connection) {
+             // if (err) throw err; // not connected!
+
+              // Use the connection
+              pool.query(
+                  `SELECT * FROM user WHERE id = ${userId};`,
+                  function (error, results, fields) {
+                      // When done with the connection, release it.
+                      //connection.release();
+
+                      // Handle error after the release.
+                      if (results.length == 0) {
+                          res.status(404).json({
+                              status: 404,
+                              message: "User does not exist"
+                          });
+                      } else {
+                          res.status(200).json({
+                              status: 200,
+                              result: results,
+                          });
+                          console.log(results);
+                      }
+                  }
+              );
+         // });
+      }
+
+  },
     updateUser(req, res, next) {
       const userId = req.params.userId;
       let user = req.body;
@@ -113,19 +197,20 @@ let controller = {
         `UPDATE user SET ? WHERE id = ?`,
                 [user, userId],
         (err, results, fields) => {
-          const { affectedRows } = results;
-          if (err) throw err;
-  
-          if (affectedRows == 0) {
-            const error = {
-              status: 404,
-              message: "User with provided id does not exist",
-              result: "User with provided id does not exist",
-            };
-            next(error);
-          } else {
-            res.status(200).json({ status: 200, result: "Succesful update!" });
-          }
+          //const { affectedRows } = results;
+          if (results.affectedRows > 0) {
+            res.status(200).json({
+                status: 200,
+                result: user,
+            });
+            console.log(user);
+        } else {
+            const err = {
+                status: 400,
+                message: "User does not exist"
+            }
+            next(err);
+        }
         }
       );
     },
