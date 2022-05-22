@@ -186,7 +186,7 @@ describe('Manage users', () => {
                   done();
               })
           });*/
-          it("TC 202-1 Zero users should be returned", (done) => {
+         /* it("TC 202-1 Zero users should be returned", (done) => {
               chai.request(server).get("/api/user/")
                   .end((err, res) => {
                       res.should.have.status(200);
@@ -267,7 +267,7 @@ describe('Manage users', () => {
                       });
               });
   
-          });
+          });*/
       });
         describe("UC-203 Requesting Userprofile", () => {
           /*afterEach((done) => {
