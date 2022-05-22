@@ -385,7 +385,7 @@ describe('Manage users', () => {
                 done();
               });
           });
-          it('TC 205-3 When the phonenumber does not match the regex, a valid error should be returned', (done) => {
+         /* it('TC 205-3 When the phonenumber does not match the regex, a valid error should be returned', (done) => {
             dbconnection.query(INSERT_USER_1, () => {
                 chai.request(server).put('/api/user/1')
                     .set({ Authorization: token })
@@ -409,7 +409,7 @@ describe('Manage users', () => {
                         done();
                     });
             });
-        });
+        });*/
           
           it("TC 205-4 When a user with the provided id does not exist, a valid error should be returned", (done) => {
             const user = {
