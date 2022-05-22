@@ -2,7 +2,6 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../../index');
 require('dotenv').config()
-const assert = require('assert');
 const dbconnection = require('../../src/database/dbconnection')
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey, logger } = require('../../src/config/config')
@@ -83,7 +82,7 @@ describe('Manage users', () => {
                 done();
               });
           });
-         /* it("TC 201-3 When a password is not valid, a valid error should be returned", (done) => {
+          it("TC 201-3 When a password is not valid, a valid error should be returned", (done) => {
             chai
               .request(server)
               .post("/api/user")
@@ -107,10 +106,10 @@ describe('Manage users', () => {
                 status.should.equals(400);
                 result.should.be
                   .a("string")
-                  .that.equals("Password must be a string");
+                  .that.equals("Invalid password");
                 done();
               });
-          });*/
+          });
           it("TC 201-5 When a user is succesfully added, a valid response should be returned", (done) => {
             const user = {
                 firstName: "Test2",
@@ -179,14 +178,14 @@ describe('Manage users', () => {
           });
         });
        // describe("UC-202 Overview of Users", () => {});
-        describe('UC-202 overview users', () => {
+        //describe('UC-202 overview users', () => {
           /*afterEach((done) => {
               dbconnection.query(CLEAR_USERS_TABLE, (err, result, fields) => {
                   if (err) throw err;
                   done();
               })
           });*/
-         /* it("TC 202-1 Zero users should be returned", (done) => {
+          /*it("TC 202-1 Zero users should be returned", (done) => {
               chai.request(server).get("/api/user/")
                   .end((err, res) => {
                       res.should.have.status(200);
@@ -267,8 +266,8 @@ describe('Manage users', () => {
                       });
               });
   
-          });*/
-      });
+          });
+      });*/
         describe("UC-203 Requesting Userprofile", () => {
           /*afterEach((done) => {
               dbconnection.query(CLEAR_USERS_TABLE, (err, result, fields) => {
@@ -385,31 +384,7 @@ describe('Manage users', () => {
                 done();
               });
           });
-         /* it('TC 205-3 When the phonenumber does not match the regex, a valid error should be returned', (done) => {
-            dbconnection.query(INSERT_USER_1, () => {
-                chai.request(server).put('/api/user/1')
-                    .set({ Authorization: token })
-                    .send({
-                        firstName: "firstName",
-                        lastName: "last",
-                        emailAdress: "rens@lakens.org",
-                        password: "Geh3imWachtwoord!",
-                        isActive: 1,
-                        phoneNumber: "123 456",
-                        roles: 'editor',
-                        street: "street",
-                        city: "city",
-                    })
-                    .end((err, res) => {
-                        //assert.ifError(err);
-                        res.should.be.an('object');
-                        let { status, message } = res.body;
-                        status.should.equals(400);
-                        message.should.be.a('string').that.equals('PhoneNumber must be a string');
-                        done();
-                    });
-            });
-        });*/
+       
           
           it("TC 205-4 When a user with the provided id does not exist, a valid error should be returned", (done) => {
             const user = {
