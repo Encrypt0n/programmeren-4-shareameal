@@ -4,11 +4,11 @@ const router = express.Router();
 const mealController = require("../controllers/meal.controller");
 
 router
-    .get("/api/meal", mealController.getAllMeals)
-    .get("/api/meal/:id", mealController.getMeal)
-    .delete("/api/meal/:id", authController.validateToken, mealController.deleteMeal)
-    .post("/api/meal", authController.validateToken, mealController.validateMeal, mealController.addMeal)
-    .put("/api/meal/:id", authController.validateToken, mealController.validateMeal, mealController.updateMeal)
+    .get("/meal", mealController.getAllMeals)
+    .get("/meal/:id", mealController.getMeal)
+    .delete("/meal/:id", authController.validateToken, mealController.deleteMeal)
+    .post("/meal", authController.validateToken, mealController.validateMeal, mealController.addMeal)
+    .put("/meal/:id", authController.validateToken, mealController.validateMeal, mealController.updateMeal)
 
 
 
