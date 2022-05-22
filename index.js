@@ -3,6 +3,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const authRoutes = require('./src/routes/authentication.routes')
 const userRoutes = require('./src/routes/user.routes')
+const mealRoutes = require('./src/routes/meals.routes');
 require('dotenv').config();
 const logger = require('./src/config/config').logger
 
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 
 app.use('/api', userRoutes)
 app.use('/api', authRoutes)
+app.use('/api', mealRoutes);
 
 app.use(router);
 
