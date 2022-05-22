@@ -106,7 +106,7 @@ describe('Manage users', () => {
                 status.should.equals(400);
                 result.should.be
                   .a("string")
-                  .that.equals("Invalid password");
+                  .that.equals("Password must be a string");
                 done();
               });
           });
