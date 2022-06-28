@@ -112,10 +112,10 @@ describe('Manage users', () => {
           });
           it("TC 201-5 When a user is succesfully added, a valid response should be returned", (done) => {
             const user = {
-                firstName: "Test2",
+                firstName: "Test4",
                 lastName: "van Turnhout",
                 isActive: true,
-                emailAdress: "test2@server.com",
+                emailAdress: "test4@server.com",
                 password: "secret",
                 phoneNumber: "+31612345678",
                 //roles: "editor",
