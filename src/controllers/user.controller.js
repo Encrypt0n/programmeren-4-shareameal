@@ -80,54 +80,43 @@ let controller = {
           }
         );
     },
-    getAllUsers(req,res) {
-      const queryParams = req.query;
-        logger.debug(queryParams);
+    getAllUsers: (req, res) => {
+      let { id, firstName, lastName, street, city, isActive, emailAdress, phoneNumber } = req.query;
 
-        let { firstName, isActive } = req.query;
-        let queryString = "SELECT * FROM `user`";
+      if (!id) { id = '%' }
+      if (!firstName) { firstName = '%' }
+      if (!lastName) { lastName = '%' }
+      if (!street) { street = '%' }
+      if (!city) { city = '%' }
+      if (!isActive) { isActive = '%' }
+      if (!emailAdress) { emailAdress = '%' }
+      if (!phoneNumber) { phoneNumber = '%' }
 
-        if (firstName || isActive) {
-            queryString += " WHERE "
-            if (firstName) {
-                queryString += '`firstName` LIKE ?'
-                firstName = '%' + firstName + '%'
-            }
-            if (firstName && isActive) {
-                queryString += ` AND `
-            }
-        } if (isActive) {
-            queryString += `isActive = ${isActive}`;
-        }
+      pool.query(`SELECT id, firstName, lastName, isActive, emailAdress, phoneNumber, roles, street, city 
+          FROM user WHERE id LIKE ? AND firstName LIKE ? AND lastName LIKE ? AND street LIKE ? AND city LIKE ? AND isActive LIKE ? AND emailAdress LIKE ? AND phoneNumber LIKE ?`, [id, '%' + firstName + '%', '%' + lastName + '%', '%' + street + '%', '%' + city + '%', isActive, '%' + emailAdress + '%', '%' + phoneNumber + '%'], function(dbError, results, fields) {
+          if (dbError) {
+              if (dbError.errno === 1064) {
+                  res.status(400).json({
+                      status: 400,
+                      message: "Something went wrong with the filter URL"
+                  });
+                  return;
+              } else {
+                  logger.error(dbError);
+                  res.status(500).json({
+                      status: 500,
+                      result: "Error"
+                  });
+                  return;
+              }
+          }
 
-        queryString += ";";
-
-        logger.debug(`queryString = ${queryString}`)
-
-        //dbconnection.getConnection(function (err, connection) {
-           // if (err) next(err) // not connected!
-
-            // Use the connection
-            pool.query(
-                queryString,
-                [firstName, isActive],
-                function (error, results, fields) {
-                    // When done with the connection, release it.
-                    connection.release()
-
-                    // Handle error after the release.
-                    if (error) next(error)
-
-                    // Don't use the connection here, it has been returned to the pool.
-                    res.status(200).json({
-                        status: 200,
-                        result: results,
-                    });
-                    console.log(results);
-                }
-            )
-       // })
-    },
+          res.status(200).json({
+              status: 200,
+              result: results
+          });
+      });
+  },
     getUserById(req,res, next) {
       const userId = req.params.userId;
       pool.query(
