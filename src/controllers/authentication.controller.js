@@ -8,70 +8,60 @@ const dbconnection = require('../database/dbconnection')
 const logger = require('../config/config').logger
 const jwtSecretKey = require('../config/config').jwtSecretKey
 
+
+
 module.exports = {
     login(req, res, next) {
-        dbconnection.getConnection((err, connection) => {
-            if (err) {
-                logger.error('Error getting connection from dbconnection')
-                res.status(500).json({
-                    error: err.toString(),
-                    datetime: new Date().toISOString(),
-                })
+        let user = req.body;
+        dbconnection.getConnection((connError, conn) => {
+            if (connError) {
+                res.status(502).json({
+                    status: 502,
+                    result: "Couldn't connect to database"
+                }); return;
             }
-            if (connection) {
-                // 1. Kijk of deze useraccount bestaat.
-                connection.query(
-                    'SELECT `id`, `emailAdress`, `password`, `firstName`, `lastName` FROM `user` WHERE `emailAdress` = ?',
-                    [req.body.emailAdress],
-                    (err, rows, fields) => {
-                        connection.release()
+            
+            if (conn) {
+                // Checks if the user exists
+                conn.query('SELECT `id`, `emailAdress`, `password`, `firstName`, `lastName` FROM `user` WHERE `emailAdress` = ?', user.emailAdress, (err, rows, fields) => {
+                        // Releases the connection when done
+                        conn.release();
                         if (err) {
-                            logger.error('Error: ', err.toString())
+                            logger.debug(err);
                             res.status(500).json({
-                                error: err.toString(),
-                                datetime: new Date().toISOString(),
+                                status: 500,
+                                message: err.toString(),
                             })
                         }
+
                         if (rows) {
-                            // 2. Er was een resultaat, check het password.
-                            if (
-                                rows &&
+                            // Checks the password
+                            if (rows &&
                                 rows.length === 1 &&
                                 rows[0].password == req.body.password
-                            ) {
-                                logger.info(
-                                    'passwords DID match, sending userinfo and valid token'
-                                )
-                                // Extract the password from the userdata - we do not send that in the response.
-                                const { password, ...userinfo } = rows[0]
-                                // Create an object containing the data we want in the payload.
+                                ) 
+                            {
+                                logger.info('passwords DID match, sending userinfo and valid token');
+
+                                // Extracts the password from the userdata
+                                const { password, ...userinfo } = rows[0];
+                                // Create an object containing the payload
                                 const payload = {
                                     userId: userinfo.id,
                                 }
 
-                                jwt.sign(
-                                    payload,
-                                    jwtSecretKey,
-                                    { expiresIn: '90d' },
-                                    function (err, token) {
-                                        logger.debug(
-                                            'User logged in, sending: ',
-                                            userinfo
-                                        )
-                                        res.status(200).json({
-                                            statusCode: 200,
-                                            results: { ...userinfo, token },
-                                        })
-                                    }
-                                )
+                                jwt.sign(payload, jwtSecretKey, { expiresIn: '12d' }, function (err, token) {
+                                    logger.debug('User logged in, sending: ', userinfo);
+                                    res.status(200).json({
+                                        status: 200,
+                                        result: { ...userinfo, token },
+                                    });
+                                });
                             } else {
-                                logger.info(
-                                    'User not found or password invalid'
-                                )
-                                res.status(401).json({
-                                    message:
-                                        'User not found or password invalid',
-                                    datetime: new Date().toISOString(),
+                                logger.info('User not found or password invalid');
+                                res.status(404).json({
+                                    status: 404,
+                                    message: 'User not found or password invalid',
                                 })
                             }
                         }
@@ -81,59 +71,48 @@ module.exports = {
         })
     },
 
-    //
-    //
-    //
     validateLogin(req, res, next) {
-        // Verify that we receive the expected input
+        let user = req.body;
+        // Verifies the input
         try {
-            assert(
-                typeof req.body.emailAdress === 'string',
-                'email must be a string.'
-            )
-            assert(
-                typeof req.body.password === 'string',
-                'password must be a string.'
-            )
-            next()
-        } catch (ex) {
-            res.status(422).json({
-                error: ex.toString(),
-                datetime: new Date().toISOString(),
+            assert(typeof user.emailAdress === 'string', 'Email must be a string');
+            assert(typeof user.password === 'string', 'Password must be a string');
+
+            next();
+        } catch (err) {
+            res.status(400).json({
+                status: 400,
+                message: err.message,
             })
         }
     },
 
-    //
-    //
-    //
     validateToken(req, res, next) {
-        logger.info('validateToken called')
-        // logger.trace(req.headers)
-        // The headers should contain the authorization-field with value 'Bearer [token]'
+        logger.info('validateToken called');
+        // The headers should contain the authorization-field with the value 'Bearer [token]'
         const authHeader = req.headers.authorization
+        
         if (!authHeader) {
-            logger.warn('Authorization header missing!')
+            logger.warn('Authorization header is missing');
             res.status(401).json({
-                error: 'Authorization header missing!',
+                status: 401,
+                message: 'Authorization header is missing',
                 datetime: new Date().toISOString(),
-            })
+            });
         } else {
-            // Strip the word 'Bearer ' from the headervalue
+            // Removes the word 'Bearer ' from the headervalue
             const token = authHeader.substring(7, authHeader.length)
 
             jwt.verify(token, jwtSecretKey, (err, payload) => {
                 if (err) {
-                    logger.warn('Not authorized')
+                    logger.warn('Not authorized');
                     res.status(401).json({
-                        error: 'Not authorized',
-                        datetime: new Date().toISOString(),
+                        status: 401,
+                        message: 'Not authorized',
                     })
-                }
-                if (payload) {
+                } else if (payload) {
                     logger.debug('token is valid', payload)
-                    // User heeft toegang. Voeg UserId uit payload toe aan
-                    // request, voor ieder volgend endpoint.
+                    // User has access, adds UserId from payload to the request
                     req.userId = payload.userId
                     next()
                 }

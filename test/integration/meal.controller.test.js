@@ -105,8 +105,21 @@ const INSERT_USER_2 =
     'INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES' +
     '(2, "test", "test", "test@server.com", "test", "test", "test");';
 
-const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY1MjgwNDg4OSwiZXhwIjoxNjUzODQxNjg5fQ.2shFq3anP77fCpv2jWYY1dYOUX5kmq_Sh1CWT6LqkUQ"
-//const token = process.env.JWT_TEST_TOKEN;
+//const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY1MjgwNDg4OSwiZXhwIjoxNjUzODQxNjg5fQ.2shFq3anP77fCpv2jWYY1dYOUX5kmq_Sh1CWT6LqkUQ"
+const token = process.env.JWT_TEST_TOKEN;
+
+function createLoginToken(server, loginDetails, done) {
+    chai.request(server)
+        .post('/auth/login')
+        .send(loginDetails)
+        .end(function(error, response) {
+            if (error) {
+                throw error;
+            }
+            let loginToken = response.body.token;
+            done(loginToken);
+        });
+}
 
 chai.should();
 chai.use(chaiHttp);
@@ -301,13 +314,15 @@ describe('Manage meal api/meal', () => {
         })
 
         it("TC-302-3 When the user is not the owner of the meal, a valid error should be returned", (done) => {
+            //createLoginToken(server, { email: "d.ambesi@avans.nl", password: "Geheimwachtwoord11!" }, done, function(header) {
             dbconnection.query(INSERT_USER_2, () => {
                 dbconnection.query(INSERT_MEAL_1, () => {
+                    createLoginToken(server, { email: "test@server.com", password: "test" }, done, function(header) {
                     chai
                         .request(server)
                         .put("/api/meal/1")
                         .set({
-                            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTY1MzA1NTI5NSwiZXhwIjoxNjU0MDkyMDk1fQ.OKjPkj0LsoVzksiIHt1UcXzcLDohIs6gjU-C0N-9ROg',
+                            Authorization: header,
                         })
                         .send({
                             name: "test",
@@ -337,6 +352,7 @@ describe('Manage meal api/meal', () => {
 
                             done();
                         });
+                    })
                 });
             });
         });
@@ -513,11 +529,12 @@ describe('Manage meal api/meal', () => {
         it("TC-305-3 When the user is not the owner of the meal, a valid error should be returned", (done) => {
             dbconnection.query(INSERT_USER_2, () => {
                 dbconnection.query(INSERT_MEAL_1, () => {
+                    createLoginToken(server, { email: "test@server.com", password: "test" }, done, function(header) {
                     chai
                         .request(server)
                         .delete("/api/meal/1")
                         .set({
-                            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTY1MzA1NTI5NSwiZXhwIjoxNjU0MDkyMDk1fQ.OKjPkj0LsoVzksiIHt1UcXzcLDohIs6gjU-C0N-9ROg',
+                            Authorization: header,
                         })
                         .end((req, res) => {
 
@@ -531,6 +548,7 @@ describe('Manage meal api/meal', () => {
 
                             done();
                         });
+                    })
                 });
             });
         });

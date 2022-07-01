@@ -1,9 +1,10 @@
 //
 // Authentication routes
 //
-const routes = require('express').Router()
+const express = require("express");
+const router = express.Router();
 const AuthController = require('../controllers/authentication.controller')
 
-routes.post('/auth/login', AuthController.validateLogin, AuthController.login)
+router.post('/auth/login', AuthController.validateLogin, AuthController.login)
 
-module.exports = routes
+module.exports = router

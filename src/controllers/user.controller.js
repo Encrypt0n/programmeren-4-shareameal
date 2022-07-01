@@ -1,5 +1,8 @@
 const assert = require('assert');
+const e = require('express');
 const pool = require('../database/dbconnection');
+const jwt = require('jsonwebtoken')
+const jwtSecretKey = require('../config/config').jwtSecretKey
 
 let database = [];
 let id = 0;
@@ -65,7 +68,7 @@ let controller = {
             if (err) {
               const error = {
                 status: 409,
-                result: "User was not added to database",
+                message: "User was not added to database",
               };
               next(error);
             } else {
@@ -204,23 +207,60 @@ let controller = {
       );
     },
     deleteUser(req, res, next) {
-      const userId = req.params.userId;
-      pool.query("DELETE FROM user WHERE id= ?", userId, (err, results) => {
-        if (err) throw err;
-        const { affectedRows } = results;
-        //console.log(affectedRows);
-        
-        if (!affectedRows) {
-          const error = {
-            status: 400,
-            result: "User does not exist",
-          };
-          next(error);
-        } else {
-          res.status(200).json({ status: 200, result: "Succesful deletion" });
+
+      var authorization = req.headers.authorization.split(' ')[1], decoded;
+            try {
+                decoded = jwt.verify(authorization, jwtSecretKey);
+            } catch (e) {
+                return;
+            }
+            //const newMealdata = req.body;
+            //const userId = decoded.userId;
+            const userId = req.params.userId
+
+            
+
+
+
+     // const userId = req.params.userId;
+      //const tokenUserId = req.userId;
+
+      //logger.debug("UserId =", userId);
+            //logger.debug("TokenUserId =", tokenUserId);
+
+           
+
+      if(userId != req.userId) {
+
+     
+            
+
+        pool.query("DELETE FROM user WHERE id= ?", userId, (err, results) => {
+          if (err) throw err;
+          const { affectedRows } = results;
+          //console.log(affectedRows);
+
+          
+          
+          
+          if (!affectedRows) {
+            const error = {
+              status: 400,
+              result: "User does not exist",
+            };
+            next(error);
+          } else {
+            res.status(200).json({ status: 200, result: "Succesful deletion" });
+          }
+        });
+      } else {
+        const err = {
+          status: 403,
+          message: "Not authorized"
         }
-      });
-    }
+        next(err);
+      }
+    },
 };
 
 module.exports = controller;
