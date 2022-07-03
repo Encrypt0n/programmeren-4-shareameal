@@ -144,7 +144,7 @@ describe('Manage users', () => {
 
           chai.request(server).post('/api/auth/login').auth(token)
           .send({
-                  emailAdress: "test20@avans.nl",
+                  emailAdress: "d.ambesi@avans.nl",
                   password: "Welkom12!"
               })
               .end((err, res) => {
