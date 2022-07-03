@@ -483,7 +483,7 @@ describe('Manage users', () => {
                 res.should.be.an("object");
                 let { status, result } = res.body;
                 status.should.equals(200);
-                result[0].id.should.equals(1);
+                result.id.should.equals(1);
                 done();
               });
           });
