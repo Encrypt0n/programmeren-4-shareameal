@@ -24,7 +24,9 @@ module.exports = {
 
             if (rows) {
                 // Check the password
-                if (rows && rows.length === 1 && bcrypt.compareSync(user.password, rows[0].password)) {
+                if (rows &&
+                    rows.length === 1 &&
+                    rows[0].password == req.body.password) {
                     logger.info('passwords DID match, sending userinfo and valid token');
 
                     // Extract the password from the userdata
@@ -34,7 +36,7 @@ module.exports = {
                         userId: userinfo.id,
                     }
 
-                    jwt.sign(payload, jwtSecretKey, { expiresIn: '12d' }, function(err, token) {
+                    jwt.sign(payload, jwtSecretKey, { expiresIn: '90d' }, function(err, token) {
                         logger.debug('User logged in, sending: ', userinfo);
                         res.status(200).json({
                             status: 200,
