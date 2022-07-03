@@ -13,7 +13,7 @@ const jwtSecretKey = require('../config/config').jwtSecretKey
 module.exports = {
     login(req, res, next) {
         let user = req.body;
-        pool.query('SELECT `id`, `emailAdress`, `password`, `firstName`, `lastName` FROM `user` WHERE `emailAdress` = ?', user.emailAdress, (err, rows, fields) => {
+        dbconnection.query('SELECT `id`, `emailAdress`, `password`, `firstName`, `lastName` FROM `user` WHERE `emailAdress` = ?', user.emailAdress, (err, rows, fields) => {
             if (err) {
                 logger.debug(err);
                 res.status(500).json({
