@@ -13,60 +13,41 @@ const jwtSecretKey = require('../config/config').jwtSecretKey
 module.exports = {
     login(req, res, next) {
         let user = req.body;
-        dbconnection.getConnection((connError, conn) => {
-            if (connError) {
-                res.status(502).json({
-                    status: 502,
-                    result: "Couldn't connect to database"
-                }); return;
+        pool.query('SELECT `id`, `emailAdress`, `password`, `firstName`, `lastName` FROM `user` WHERE `emailAdress` = ?', user.emailAdress, (err, rows, fields) => {
+            if (err) {
+                logger.debug(err);
+                res.status(500).json({
+                    status: 500,
+                    message: err.toString(),
+                })
             }
-            
-            if (conn) {
-                // Checks if the user exists
-                conn.query('SELECT `id`, `emailAdress`, `password`, `firstName`, `lastName` FROM `user` WHERE `emailAdress` = ?', user.emailAdress, (err, rows, fields) => {
-                        // Releases the connection when done
-                        conn.release();
-                        if (err) {
-                            logger.debug(err);
-                            res.status(500).json({
-                                status: 500,
-                                message: err.toString(),
-                            })
-                        }
 
-                        if (rows) {
-                            // Checks the password
-                            if (rows &&
-                                rows.length === 1 &&
-                                rows[0].password == req.body.password
-                                ) 
-                            {
-                                logger.info('passwords DID match, sending userinfo and valid token');
+            if (rows) {
+                // Check the password
+                if (rows && rows.length === 1 && bcrypt.compareSync(user.password, rows[0].password)) {
+                    logger.info('passwords DID match, sending userinfo and valid token');
 
-                                // Extracts the password from the userdata
-                                const { password, ...userinfo } = rows[0];
-                                // Create an object containing the payload
-                                const payload = {
-                                    userId: userinfo.id,
-                                }
-
-                                jwt.sign(payload, jwtSecretKey, { expiresIn: '12d' }, function (err, token) {
-                                    logger.debug('User logged in, sending: ', userinfo);
-                                    res.status(200).json({
-                                        status: 200,
-                                        result: { ...userinfo, token },
-                                    });
-                                });
-                            } else {
-                                logger.info('User not found or password invalid');
-                                res.status(404).json({
-                                    status: 404,
-                                    message: 'User not found or password invalid',
-                                })
-                            }
-                        }
+                    // Extract the password from the userdata
+                    const { password, ...userinfo } = rows[0];
+                    // Create an object containing the payload
+                    const payload = {
+                        userId: userinfo.id,
                     }
-                )
+
+                    jwt.sign(payload, jwtSecretKey, { expiresIn: '12d' }, function(err, token) {
+                        logger.debug('User logged in, sending: ', userinfo);
+                        res.status(200).json({
+                            status: 200,
+                            result: {...userinfo, token },
+                        });
+                    });
+                } else {
+                    logger.info('User not found or password invalid');
+                    res.status(404).json({
+                        status: 404,
+                        message: 'User not found or password invalid',
+                    })
+                }
             }
         })
     },
@@ -91,7 +72,7 @@ module.exports = {
         logger.info('validateToken called');
         // The headers should contain the authorization-field with the value 'Bearer [token]'
         const authHeader = req.headers.authorization
-        
+
         if (!authHeader) {
             logger.warn('Authorization header is missing');
             res.status(401).json({
@@ -112,7 +93,7 @@ module.exports = {
                     })
                 } else if (payload) {
                     logger.debug('token is valid', payload)
-                    // User has access, adds UserId from payload to the request
+                        // User has access, adds UserId from payload to the request
                     req.userId = payload.userId
                     next()
                 }
