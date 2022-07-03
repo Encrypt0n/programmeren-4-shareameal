@@ -114,7 +114,7 @@ let controller = {
                     logger.debug('token is valid', payload)
                     // User has access, adds UserId from payload to the request
                     req.userId = payload.userId
-                    //next()
+                    next()
                 }
             })
         }
