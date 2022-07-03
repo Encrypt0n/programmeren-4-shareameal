@@ -5,6 +5,7 @@ require('dotenv').config()
 const dbconnection = require('../../src/database/dbconnection')
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey, logger } = require('../../src/config/config')
+
 chai.should();
 chai.use(chaiHttp);*/
 
@@ -23,6 +24,8 @@ chai.use(chaiHttp);*/
      'INSERT INTO `meal` (`id`, `name`, `description`, `imageUrl`, `dateTime`, `maxAmountOfParticipants`, `price`, `cookId`) VALUES' +
      "(1, 'Meal A', 'description', 'image url', NOW(), 5, 6.50, 1)," +
      "(2, 'Meal B', 'description', 'image url', NOW(), 5, 6.50, 1);"
+
+
      describe('UC-303 Lijst van maaltijden opvragen /api/meal', () => {
         //
         beforeEach((done) => {
@@ -44,6 +47,7 @@ chai.use(chaiHttp);*/
                 )
             })
         })
+
         it('TC-303-1 Lijst van maaltijden wordt succesvol geretourneerd', (done) => {
             chai.request(server)
                 .get('/api/movie')
@@ -53,11 +57,14 @@ chai.use(chaiHttp);*/
                 )
                 .end((err, res) => {
                     assert.ifError(err)
+
                     res.should.have.status(200)
                     res.should.be.an('object')
+
                     res.body.should.be
                         .an('object')
                         .that.has.all.keys('results', 'statusCode')
+
                     const { statusCode, results } = res.body
                     statusCode.should.be.an('number')
                     results.should.be.an('array').that.has.length(2)

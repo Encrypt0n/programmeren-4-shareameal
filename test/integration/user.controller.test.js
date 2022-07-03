@@ -176,6 +176,7 @@ describe('Manage users', () => {
                 chai
                 .request(server)
                 .post('/api/user')
+                //.set({ Authorization: token })
                 .send({
                     //alle user values
                     lastName: "Doe",
@@ -290,7 +291,7 @@ describe('Manage users', () => {
                         res.should.be.an('object');
                         let { status, message } = res.body;
                         status.should.equals(409);
-                        message.should.be.a('string').that.equals('User with this email already exists');
+                        message.should.be.a('string').that.equals('User was not added to database');
                         done();
                     });
             });
