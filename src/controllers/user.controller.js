@@ -121,7 +121,7 @@ let controller = {
       });
   },
   getUserById: (req, res, next) => {
-    const userId = req.params.id;
+    const userId = req.params.userId;
     pool.query(
         `SELECT * FROM user WHERE id =${userId}`,
         (err, results, fields) => {
