@@ -11,7 +11,7 @@ router.post("/user", userController.validateUser, userController.addUser)
   
   router.get("/user/:userId", authController.validateToken, userController.getUserById)
 
-  router.get("/user/profile", authController.validateToken, userController.getUserProfile)
+  router.get("/user/profile/:userId", authController.validateToken, userController.getUserProfile)
   
   /*router.get('/user/profile/:userId', (req, res) => {
     res.status(400).json({
