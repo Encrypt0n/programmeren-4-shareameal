@@ -152,7 +152,7 @@ let controller = {
           } catch (e) {
               return;
           }
-          var userId = req.userId;
+          const userId = req.userId;
 
           //dbconnection.getConnection(function (err, connection) {
              // if (err) throw err; // not connected!
@@ -166,7 +166,7 @@ let controller = {
 
                       // Handle error after the release.
                       const result = results[0];
-                      if (result == 0) {
+                      if (!result) {
                           res.status(404).json({
                               status: 404,
                               message: "User does not exist"
