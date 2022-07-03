@@ -143,7 +143,7 @@ let controller = {
       );
     },
     getUserProfile(req, res) {
-      if (req.headers && req.headers.authorization) {
+     // if (req.headers && req.headers.authorization) {
           var authorization = req.headers.authorization.split(' ')[1],
               decoded;
           try {
@@ -179,7 +179,7 @@ let controller = {
                   }
               );
          // });
-      }
+     // }
 
   },
     updateUser(req, res, next) {
