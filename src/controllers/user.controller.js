@@ -125,9 +125,8 @@ let controller = {
       pool.query(
         `SELECT * FROM user WHERE id =${userId}`,
         (err, results, fields) => {
-         // console.log(results);
-        // const result = results[0];
-          if (!results && results.length != 1) {
+          console.log(results);
+          if (results.length == 0) {
             const err = {
                 status: 404,
                 message: "User does not exist"
@@ -136,9 +135,9 @@ let controller = {
         } else {
             res.status(200).json({
                 status: 200,
-                result: results[0],
+                result: results,
             });
-            //console.log(results[0]);
+            console.log(results[0]);
         }
         }
       );
@@ -165,8 +164,7 @@ let controller = {
                       //connection.release();
 
                       // Handle error after the release.
-                     // const result = results[0];
-                      if (!results && results.length != 1) {
+                      if (results.length == 0) {
                           res.status(404).json({
                               status: 404,
                               message: "User does not exist"
@@ -174,9 +172,9 @@ let controller = {
                       } else {
                           res.status(200).json({
                               status: 200,
-                              result: results[0],
+                              result: results,
                           });
-                          //console.log(results);
+                          console.log(results);
                       }
                   }
               );
