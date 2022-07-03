@@ -119,7 +119,7 @@ describe('Manage users', () => {
             password: "Geheimwachtwoord11!"
         })
         .end((err, res) => {
-            assert.ifError(err);
+            //assert.ifError(err);
 
             res.should.have.status(404);
             res.should.be.an('object');
@@ -134,13 +134,13 @@ describe('Manage users', () => {
 });
 
   it('TC 101-5 User successfully logged in', (done) => {
-    pool.query(INSERT_USER_1, () => {
+    dbconnection.query(INSERT_USER_1, () => {
         chai.request(server).post('/auth/login').auth(token).send({
                 emailAdress: "d.ambesi@avans.nl",
                 password: "Welkom12!"
             })
             .end((err, res) => {
-                assert.ifError(err);
+                //assert.ifError(err);
 
                 res.should.have.status(200);
                 res.should.be.an('object');
