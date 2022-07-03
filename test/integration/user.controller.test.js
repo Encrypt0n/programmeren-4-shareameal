@@ -25,7 +25,7 @@ const token = process.env.JWT_TEST_TOKEN;
   * Voeg een user toe aan de database. Deze user heeft id 1.
   * Deze id kun je als foreign key gebruiken in de andere queries, bv insert meal.
   */
-  const password = "Welkom12!";
+  let password = "Welkom12!";
   password = bcrypt.hashSync(password, saltRounds);
   const INSERT_USER_1 =
   'INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES' +
