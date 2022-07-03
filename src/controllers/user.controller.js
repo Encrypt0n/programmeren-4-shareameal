@@ -144,7 +144,16 @@ let controller = {
     },
     getUserProfile(req, res) {
      // if (req.headers && req.headers.authorization) {
-     const userId = req.userId;
+      if (req.headers && req.headers.authorization) {
+        var authorization = req.headers.authorization.split(' ')[1],
+            decoded;
+        try {
+            decoded = jwt.verify(authorization, jwtSecretKey);
+        } catch (e) {
+            return;
+        }
+        var userId = decoded.userId;
+     //const userId = req.userId;
 
         pool.query('SELECT * FROM user WHERE id = ' + userId, function(dbError, results, fields) {
             if (dbError) {
@@ -169,7 +178,7 @@ let controller = {
                 });
             }
         });
-        
+      };
 
   },
     updateUser(req, res, next) {
