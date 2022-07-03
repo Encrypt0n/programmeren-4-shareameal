@@ -230,7 +230,7 @@ let controller = {
 
            
 
-      if(userId != req.userId) {
+      if(userId != decoded.userId) {
 
      
             
