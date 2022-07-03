@@ -121,7 +121,7 @@ let controller = {
       });
   },
     getUserById(req,res, next) {
-      var userId = req.params.userId;
+      const userId = req.params.userId;
       pool.query(
         `SELECT * FROM user WHERE id =${userId}`,
         (err, results, fields) => {
@@ -151,7 +151,7 @@ let controller = {
           } catch (e) {
               return;
           }
-          var userId = decoded.userId;
+          const userId = req.userId;
 
           //dbconnection.getConnection(function (err, connection) {
              // if (err) throw err; // not connected!
