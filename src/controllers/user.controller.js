@@ -121,7 +121,7 @@ let controller = {
       });
   },
   getUserById: (req, res, next) => {
-    //
+    ////
     const userId = req.params.userId;
     pool.query(
         `SELECT * FROM user WHERE id =${userId}`,
@@ -225,7 +225,7 @@ let controller = {
 
            
 
-      if(userId != req.userId) {
+      if(userId != decoded.userId) {
 
      
             
