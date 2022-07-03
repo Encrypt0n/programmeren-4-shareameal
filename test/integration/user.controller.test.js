@@ -135,7 +135,7 @@ describe('Manage users', () => {
 
   it('TC 101-5 User successfully logged in', (done) => {
     dbconnection.query(INSERT_USER_1, () => {
-        chai.request(server).post('/auth/login').auth(token).send({
+        chai.request(server).post('/api/auth/login').auth(token).send({
                 emailAdress: "d.ambesi@avans.nl",
                 password: "Welkom12!"
             })
