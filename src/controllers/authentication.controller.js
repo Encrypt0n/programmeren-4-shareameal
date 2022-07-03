@@ -10,7 +10,7 @@ const jwtSecretKey = require('../config/config').jwtSecretKey
 
 
 
-module.exports = {
+let controller = {
     login(req, res, next) {
         let user = req.body;
         dbconnection.getConnection((connError, conn) => {
@@ -119,4 +119,6 @@ module.exports = {
             })
         }
     },
-}
+};
+
+module.exports = controller;
