@@ -127,7 +127,7 @@ let controller = {
         (err, results, fields) => {
          // console.log(results);
          const result = results[0];
-          if (result == 0) {
+          if (!result) {
             const err = {
                 status: 404,
                 message: "User does not exist"
@@ -166,7 +166,7 @@ let controller = {
 
                       // Handle error after the release.
                       const result = results[0];
-                      if (result.length == 0) {
+                      if (!result) {
                           res.status(404).json({
                               status: 404,
                               message: "User does not exist"

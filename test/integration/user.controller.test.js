@@ -476,7 +476,7 @@ describe('Manage users', () => {
                 .end((err, res) => {
                     //assert.ifError(err);
                     res.should.have.status(404);
-                    res.should.be.an('object');
+                   // res.should.be.an('object');
                     res.body.should.be.an('object').that.has.all.keys('status', 'message');
 
                     let { status, message } = res.body;
