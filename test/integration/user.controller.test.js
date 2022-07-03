@@ -113,58 +113,45 @@ describe('Manage users', () => {
           });
   });
 
-  it(`TC-101-4 If the user doesn't exist, a valid message should be returned`, (done) => {
-      chai.request(server).post('/api/auth/login').send({
-              emailAdress: "thisUserDoesnt@exist.com",
-              password: "Geheimwachtwoord11!"
-          })
-          .end((err, res) => {
-              //assert.ifError(err);
+  it("TC-101-4 If the user doesn't exist, a valid message should be returned", (done) => {
+    chai.request(server).post('/api/auth/login').auth(token).send({
+            emailAdress: "thisUserDoesnt@exist.com",
+            password: "Geheimwachtwoord11!"
+        })
+        .end((err, res) => {
+            assert.ifError(err);
 
-              res.should.have.status(404);
-              res.should.be.an('object');
-              res.body.should.be.an('object').that.has.all.keys('status', 'message');
+            res.should.have.status(404);
+            res.should.be.an('object');
+            res.body.should.be.an('object').that.has.all.keys('status', 'message');
 
-              let { status, message } = res.body;
-              status.should.be.a('number');
-              message.should.be.a('string').that.equals('User not found or password invalid');
+            let { status, message } = res.body;
+            status.should.be.a('number');
+            message.should.be.a('string').that.equals('User not found or password invalid');
 
-              done();
-          });
-  });
+            done();
+        });
+});
 
-  it('TC-101-5 User succesfully logged in', (done) => {
-    dbconnection.query(INSERT_USER_1, () => {
-  
+  it('TC 101-5 User successfully logged in', (done) => {
+    pool.query(INSERT_USER_1, () => {
+        chai.request(server).post('/auth/login').auth(token).send({
+                emailAdress: "d.ambesi@avans.nl",
+                password: "Welkom12!"
+            })
+            .end((err, res) => {
+                assert.ifError(err);
 
+                res.should.have.status(200);
+                res.should.be.an('object');
+                res.body.should.be.an('object').that.has.all.keys('status', 'result');
 
-          chai.request(server).post('/api/auth/login').auth(token)
-          .send({
-                  emailAdress: "d.ambesi@avans.nl",
-                  password: "Welkom12!"
-              })
-              .end((err, res) => {
-                  //assert.ifError(err);
+                let { status, result } = res.body;
+                status.should.be.a('number');
 
-                 // res.should.have.status(200);
-                 // res.should.be.an('object');
-                 res.should.be.an('object');
-                    
-                 // res.body.should.be.an('object').that.has.all.keys('status', 'result');
-                  
-                  let { status, result } = res.body;
-                  status.should.equal(200);
-                  //expect(res).to.have.status(200);
-                  status.should.be.a('number');
-                  result.should.be.an('object').that.includes.keys('id', 'emailAdress', 'firstName', 'lastName', 'token');
-                  logger.debug(result);
-
-                  done();
-              });
-      });
-  });
- // });
-
+                done();
+            });
+    });
 });
 
     describe('UC 201 add user /api/user', () => {
