@@ -152,7 +152,7 @@ let controller = {
           } catch (e) {
               return;
           }
-          var userId = req.params.userId;
+          var userId = req.userId;
 
           //dbconnection.getConnection(function (err, connection) {
              // if (err) throw err; // not connected!
