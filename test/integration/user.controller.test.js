@@ -25,7 +25,7 @@ const token = process.env.JWT_TEST_TOKEN;
   */
   const INSERT_USER_1 =
   'INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES' +
-  '(1, "first", "last", "d.ambesi@avans.nl", "Welkom12!", "street", "city");';
+  '(1, "first", "last", "d.ambesi@avans.nl", "$2a$10$jWncxSZIM72AN.l9IgfzOOLswCCutopwvvTnlztVZ0R2Ednaeu1Ty", "street", "city");';
 
   const INSERT_USER_2 =
     'INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES' +
@@ -140,8 +140,8 @@ describe('Manage users', () => {
 
           chai.request(server).post('/api/auth/login').auth(token)
           .send({
-                  emailAdress: "d.ambesi@avans.nl",
-                  password: "$2a$12$InWJEevpFlEIGZbU5sbxjeYdCgv17VUx15xnFwAW/PftnlURhT0pW"
+                  emailAdress: "test20@avans.nl",
+                  password: "Welkom12!"
               })
               .end((err, res) => {
                   //assert.ifError(err);
