@@ -121,41 +121,25 @@ let controller = {
       });
   },
   getUserById: (req, res, next) => {
-    ////
     const userId = req.params.userId;
     pool.query(
-        `SELECT * FROM user WHERE id =${userId}`,
-        (err, results, fields) => {
-<<<<<<< HEAD
-            const user = results[0];
-            if (err) {
-                const error = {
-                    status: 400,
-                    message: 'User does not exist',
-                };
-                next(error);
-            }
-
-            if (user != null) {
-                res.status(200).json({
-                    status: 200,
-                    result: user,
-                });
-            } else {
-                const error = {
-                    status: 404,
-                    message: 'User does not exist',
-                };
-                next(error);
-=======
-          console.log(results);
-          if (results.length == 0) {
-            const err = {
-                status: 404,
-                message: "User does not exist"
->>>>>>> parent of 2ba6182 (Fix get User)
-            }
-        }
+      `SELECT * FROM user WHERE id =${userId}`,
+      (err, results, fields) => {
+       // console.log(results);
+        if (results.length == 0) {
+          const err = {
+              status: 404,
+              message: "User does not exist"
+          }
+          next(err);
+      } else {
+          res.status(200).json({
+              status: 200,
+              result: results,
+          });
+          console.log(results[0]);
+      }
+      }
     );
 },
     getUserProfile: (req, res) => {
