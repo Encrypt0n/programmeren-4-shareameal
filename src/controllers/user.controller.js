@@ -152,7 +152,7 @@ let controller = {
           } catch (e) {
               return;
           }
-          var userId = decoded.userId;
+          var userId = req.params.userId;
 
           //dbconnection.getConnection(function (err, connection) {
              // if (err) throw err; // not connected!
@@ -176,7 +176,7 @@ let controller = {
                               status: 200,
                               result: result,
                           });
-                          console.log(results);
+                          //console.log(results);
                       }
                   }
               );
