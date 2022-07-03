@@ -10,7 +10,7 @@ chai.should();
 chai.use(chaiHttp);
 
 let insertedUserId = 0;
-let insertedTestUserId = 10846;
+let insertedTestUserId = 1;
 
 let database = [];
 var expect = chai.expect;
@@ -113,47 +113,59 @@ describe('Manage users', () => {
           });
   });
 
-  it("TC-101-4 If the user doesn't exist, a valid message should be returned", (done) => {
-    chai.request(server).post('/api/auth/login').auth(token).send({
-            emailAdress: "thisUserDoesnt@exist.com",
-            password: "Geheimwachtwoord11!"
-        })
-        .end((err, res) => {
-            //assert.ifError(err);
+  it(`TC-101-4 If the user doesn't exist, a valid message should be returned`, (done) => {
+      chai.request(server).post('/api/auth/login').send({
+              emailAdress: "thisUserDoesnt@exist.com",
+              password: "Geheimwachtwoord11!"
+          })
+          .end((err, res) => {
+              //assert.ifError(err);
 
-            res.should.have.status(404);
-            res.should.be.an('object');
-            res.body.should.be.an('object').that.has.all.keys('status', 'message');
+              res.should.have.status(404);
+              res.should.be.an('object');
+              res.body.should.be.an('object').that.has.all.keys('status', 'message');
 
-            let { status, message } = res.body;
-            status.should.be.a('number');
-            message.should.be.a('string').that.equals('User not found or password invalid');
+              let { status, message } = res.body;
+              status.should.be.a('number');
+              message.should.be.a('string').that.equals('User not found or password invalid');
 
-            done();
-        });
-});
-
-  it('TC 101-5 User successfully logged in', (done) => {
-    dbconnection.query(INSERT_USER_1, () => {
-        chai.request(server).post('/api/auth/login').auth(token).send({
-                emailAdress: "d.ambesi@avans.nl",
-                password: "Welkom12!"
-            })
-            .end((err, res) => {
-                //assert.ifError(err);
-
-                res.should.have.status(200);
-                res.should.be.an('object');
-                res.body.should.be.an('object').that.has.all.keys('status', 'result');
-
-                let { status, result } = res.body;
-                status.should.be.a('number');
-
-                done();
-            });
-        });
-    });
+              done();
+          });
   });
+
+  it('TC-101-5 User succesfully logged in', (done) => {
+    dbconnection.query(INSERT_USER_1, () => {
+  
+
+
+          chai.request(server).post('/api/auth/login').auth(token)
+          .send({
+                  emailAdress: "d.ambesi@avans.nl",
+                  password: "Welkom12!"
+              })
+              .end((err, res) => {
+                  //assert.ifError(err);
+
+                 // res.should.have.status(200);
+                 // res.should.be.an('object');
+                 res.should.be.an('object');
+                    
+                 // res.body.should.be.an('object').that.has.all.keys('status', 'result');
+                  
+                  let { status, result } = res.body;
+                  status.should.equal(200);
+                  //expect(res).to.have.status(200);
+                  status.should.be.a('number');
+                  result.should.be.an('object').that.includes.keys('id', 'emailAdress', 'firstName', 'lastName', 'token');
+                  logger.debug(result);
+
+                  done();
+              });
+      });
+  });
+ // });
+
+});
 
     describe('UC 201 add user /api/user', () => {
         /*beforeEach((done) => {
@@ -164,7 +176,6 @@ describe('Manage users', () => {
                 chai
                 .request(server)
                 .post('/api/user')
-               
                 .send({
                     //alle user values
                     lastName: "Doe",
@@ -279,7 +290,7 @@ describe('Manage users', () => {
                         res.should.be.an('object');
                         let { status, message } = res.body;
                         status.should.equals(409);
-                        message.should.be.a('string').that.equals('User was not added to database');
+                        message.should.be.a('string').that.equals('User with this email already exists');
                         done();
                     });
             });
@@ -460,7 +471,7 @@ describe('Manage users', () => {
                 });
         });
           it("TC 204-2 When a user whose id does not exist is requested, a valid error should be returned", (done) => {
-            chai.request(server).get("/api/user/99999")
+            chai.request(server).get("/api/user/1000")
                 .set({ Authorization: token })
                 .end((err, res) => {
                     //assert.ifError(err);
@@ -484,7 +495,7 @@ describe('Manage users', () => {
                 res.should.be.an("object");
                 let { status, result } = res.body;
                 status.should.equals(200);
-                result.id.should.equals(1);
+                result[0].id.should.equals(1);
                 done();
               });
           });

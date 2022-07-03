@@ -5,7 +5,6 @@ require('dotenv').config()
 const dbconnection = require('../../src/database/dbconnection')
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey, logger } = require('../../src/config/config')
-
 chai.should();
 chai.use(chaiHttp);*/
 
@@ -24,8 +23,6 @@ chai.use(chaiHttp);*/
      'INSERT INTO `meal` (`id`, `name`, `description`, `imageUrl`, `dateTime`, `maxAmountOfParticipants`, `price`, `cookId`) VALUES' +
      "(1, 'Meal A', 'description', 'image url', NOW(), 5, 6.50, 1)," +
      "(2, 'Meal B', 'description', 'image url', NOW(), 5, 6.50, 1);"
-
-
      describe('UC-303 Lijst van maaltijden opvragen /api/meal', () => {
         //
         beforeEach((done) => {
@@ -47,7 +44,6 @@ chai.use(chaiHttp);*/
                 )
             })
         })
-
         it('TC-303-1 Lijst van maaltijden wordt succesvol geretourneerd', (done) => {
             chai.request(server)
                 .get('/api/movie')
@@ -57,14 +53,11 @@ chai.use(chaiHttp);*/
                 )
                 .end((err, res) => {
                     assert.ifError(err)
-
                     res.should.have.status(200)
                     res.should.be.an('object')
-
                     res.body.should.be
                         .an('object')
                         .that.has.all.keys('results', 'statusCode')
-
                     const { statusCode, results } = res.body
                     statusCode.should.be.an('number')
                     results.should.be.an('array').that.has.length(2)
@@ -92,7 +85,7 @@ const CLEAR_DB = CLEAR_MEAL_TABLE + CLEAR_PARTICIPANTS_TABLE + CLEAR_USERS_TABLE
 //Insert user sql
 
 const INSERT_MEAL_1 =
-    "INSERT INTO `meal` (`id`, `isActive`, `isVega`, `isVegan`, `isToTakeHome`, `maxAmountOfParticipants`, `price`, `imageUrl`, `name`, `description`, `allergenes`, `dateTime`, `cookId`) VALUES (1, '0', '0', '0', '1', '6', '10', '343', 'test', 'Test maaltijd', 'noten', '1000-01-01 00:00:00', 10846)";
+    "INSERT INTO `meal` (`id`, `isActive`, `isVega`, `isVegan`, `isToTakeHome`, `maxAmountOfParticipants`, `price`, `imageUrl`, `name`, `description`, `allergenes`, `dateTime`, `cookId`) VALUES (1, '0', '0', '0', '1', '6', '10', '343', 'test', 'Test maaltijd', 'noten', '1000-01-01 00:00:00', 2)";
 
 const INSERT_MEAL_2 =
     "INSERT INTO `meal` (`id`, `isActive`, `isVega`, `isVegan`, `isToTakeHome`, `maxAmountOfParticipants`, `price`, `imageUrl`, `name`, `description`, `allergenes`, `dateTime`, `cookId`) VALUES (2, '0', '0', '0', '1', '6', '10', '343', 'test 2', 'Test maaltijd 2', 'noten', '1000-01-01 00:00:00', 2)";
@@ -103,7 +96,7 @@ const INSERT_USER_1 =
 
 const INSERT_USER_2 =
     'INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES' +
-    '(10846, "test", "test", "test@server.com", "test", "test", "test");';
+    '(2, "test", "test", "test@server.com", "test", "test", "test");';
 
 //const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY1MjgwNDg4OSwiZXhwIjoxNjUzODQxNjg5fQ.2shFq3anP77fCpv2jWYY1dYOUX5kmq_Sh1CWT6LqkUQ"
 const token = process.env.JWT_TEST_TOKEN;
