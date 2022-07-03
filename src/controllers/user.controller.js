@@ -68,7 +68,7 @@ let controller = {
             if (err) {
               const error = {
                 status: 409,
-                message: "User was not added to database",
+                message: "User with this email already exists",
               };
               next(error);
             } else {
@@ -125,7 +125,7 @@ let controller = {
       pool.query(
         `SELECT * FROM user WHERE id =${userId}`,
         (err, results, fields) => {
-          console.log(results);
+         // console.log(results);
           if (results.length == 0) {
             const err = {
                 status: 404,
