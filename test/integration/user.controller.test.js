@@ -151,8 +151,9 @@ describe('Manage users', () => {
 
                 done();
             });
+        });
     });
-});
+  });
 
     describe('UC 201 add user /api/user', () => {
         /*beforeEach((done) => {
