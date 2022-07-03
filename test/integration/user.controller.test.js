@@ -29,7 +29,7 @@ const token = process.env.JWT_TEST_TOKEN;
   password = bcrypt.hashSync(password, saltRounds);
   const INSERT_USER_1 =
   'INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES' +
-  "(1, 'first', 'last', 'd.ambesi@avans.nl', ${password}, 'street', 'city');";
+  '(1, "first", "last", "d.ambesi@avans.nl",' + password + ', "street", "city");';
 
   const INSERT_USER_2 =
     'INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES' +
