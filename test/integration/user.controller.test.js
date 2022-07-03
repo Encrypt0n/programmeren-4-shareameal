@@ -471,7 +471,7 @@ describe('Manage users', () => {
                 });
         });
           it("TC 204-2 When a user whose id does not exist is requested, a valid error should be returned", (done) => {
-            chai.request(server).get("/api/user/1000")
+            chai.request(server).get("/api/user/99999")
                 .set({ Authorization: token })
                 .end((err, res) => {
                     //assert.ifError(err);
