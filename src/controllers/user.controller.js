@@ -68,7 +68,7 @@ let controller = {
             if (err) {
               const error = {
                 status: 409,
-                message: "User with this email already exists",
+                message: "User was not added to database",
               };
               next(error);
             } else {
@@ -126,6 +126,7 @@ let controller = {
     pool.query(
         `SELECT * FROM user WHERE id =${userId}`,
         (err, results, fields) => {
+<<<<<<< HEAD
             const user = results[0];
             if (err) {
                 const error = {
@@ -146,6 +147,13 @@ let controller = {
                     message: 'User does not exist',
                 };
                 next(error);
+=======
+          console.log(results);
+          if (results.length == 0) {
+            const err = {
+                status: 404,
+                message: "User does not exist"
+>>>>>>> parent of 2ba6182 (Fix get User)
             }
         }
     );
