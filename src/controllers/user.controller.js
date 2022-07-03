@@ -144,36 +144,32 @@ let controller = {
     },
     getUserProfile(req, res) {
      // if (req.headers && req.headers.authorization) {
-      const userId = req.userId;
-     
-          
-          pool.query('SELECT * FROM user WHERE id = ' + userId, function (dbError, results, fields) {
-              // When done with the connection, release it.
-              conn.release();
-              
-              // Handle error after the release.
-              if (dbError) {
-                  logger.error(dbError);
-                  res.status(500).json({
-                      status: 500,
-                      result: "Error"
-                  }); return;
-              }
-              
-              const result = results[0];
-              if(result) {
-                  res.status(200).json({
-                      status: 200,
-                      result: result
-                  });
-              } else {
-                  res.status(404).json({
-                      status: 404,
-                      message: "User does not exist"
-                  });
-              }
-          });
-     
+     const userId = req.userId;
+
+        pool.query('SELECT * FROM user WHERE id = ' + userId, function(dbError, results, fields) {
+            if (dbError) {
+                logger.error(dbError);
+                res.status(500).json({
+                    status: 500,
+                    result: "Error"
+                });
+                return;
+            }
+
+            const result = results[0];
+            if (result) {
+                res.status(200).json({
+                    status: 200,
+                    result: result
+                });
+            } else {
+                res.status(404).json({
+                    status: 404,
+                    message: "User does not exist"
+                });
+            }
+        });
+        
 
   },
     updateUser(req, res, next) {
