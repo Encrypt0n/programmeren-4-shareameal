@@ -2,10 +2,9 @@ const assert = require('assert');
 const e = require('express');
 const pool = require('../database/dbconnection');
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const jwtSecretKey = require('../config/config').jwtSecretKey
-
-let database = [];
-let id = 0;
 
 let controller = {
     validateUser(req,res,next) {
@@ -50,17 +49,7 @@ let controller = {
     },
     addUser(req,res, next) {
         let user = req.body;
-       /* id++;
-        const values = [
-          user.firstName,
-          user.lastName,
-          user.isActive,
-          user.emailAdress,
-          user.phoneNumber,
-          user.roles,
-          user.street,
-          user.city
-        ];*/
+        user.password = bcrypt.hashSync(user.password, saltRounds);
         pool.query(
           `INSERT INTO user SET ?`,
           user,

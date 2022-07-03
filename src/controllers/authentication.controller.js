@@ -4,7 +4,7 @@
 const assert = require('assert')
 const jwt = require('jsonwebtoken')
 const dbconnection = require('../database/dbconnection')
-// const validateEmail = require('../util/emailvalidator')
+const bcrypt = require('bcrypt');
 const logger = require('../config/config').logger
 const jwtSecretKey = require('../config/config').jwtSecretKey
 
@@ -37,9 +37,7 @@ let controller = {
                         if (rows) {
                             // Checks the password
                             if (rows &&
-                                rows.length === 1 &&
-                                rows[0].password == req.body.password
-                                ) 
+                                rows.length === 1 && bcrypt.compareSync(user.password, rows[0].password)) 
                             {
                                 logger.info('passwords DID match, sending userinfo and valid token');
 

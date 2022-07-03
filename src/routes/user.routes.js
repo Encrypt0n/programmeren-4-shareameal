@@ -12,15 +12,6 @@ router.post("/user", userController.validateUser, userController.addUser)
 router.get("/user/profile", authController.validateToken, userController.getUserProfile)
   
   router.get("/user/:userId", authController.validateToken, userController.getUserById)
-
-  
-  
-  /*router.get('/user/profile/:userId', (req, res) => {
-    res.status(400).json({
-      status: 404,
-      result: 'Viewing the user profile is not implemented yet',
-    });
-  });*/
   
   router.delete("/user/:userId", authController.validateToken, userController.deleteUser) 
   
