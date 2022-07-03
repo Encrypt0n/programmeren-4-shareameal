@@ -151,7 +151,7 @@ let controller = {
           } catch (e) {
               return;
           }
-          var userId = req.userId;
+          var userId = decoded.userId;
 
           //dbconnection.getConnection(function (err, connection) {
              // if (err) throw err; // not connected!
