@@ -49,7 +49,7 @@ let controller = {
     },
     addUser(req,res, next) {
         let user = req.body;
-        //user.password = bcrypt.hashSync(user.password, saltRounds);
+        ///user.password = bcrypt.hashSync(user.password, saltRounds);
         pool.query(
           `INSERT INTO user SET ?`,
           user,
