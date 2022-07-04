@@ -8,7 +8,7 @@ With this API you can add, edit and delete users and meals, register and login t
 The goal of this API is to share your meal you submitted so you waste less food and meet new people.
 
 ## Installation
-API is currently running on a heroku server: [shareamealrensl.herokuapp.com/api](https://shareamealrensl.herokuapp.com/api)
+API is currently running on a heroku server: [share-a-meal-server.herokuapp.com/api](https://share-a-meal-server.herokuapp.com/api)
 
 If you want to install this server yourself, simply run this command:
 
@@ -41,4 +41,4 @@ If you run in to any problems regarding tho this project or another project of m
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Project status
-[![Deploy to Heroku](https://github.com/renslakens/programmeren-4-shareameal/actions/workflows/main.yml/badge.svg)](https://https://github.com/Encrypt0n/programmeren-4-shareameal/actions/workflows/main.yml)
+[![Deploy to Heroku](https://github.com/Encrypt0n/programmeren-4-shareameal/actions/workflows/main.yml/badge.svg)](https://https://github.com/Encrypt0n/programmeren-4-shareameal/actions/workflows/main.yml)
